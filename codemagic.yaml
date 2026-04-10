@@ -8,7 +8,7 @@ workflows:
 
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.znbs.coinmob
+        bundle_identifier: com.coinmob.app
 
     cache:
       cache_paths:
