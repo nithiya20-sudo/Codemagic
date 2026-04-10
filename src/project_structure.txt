@@ -1,0 +1,128 @@
+Folder PATH listing for volume New Volume
+Volume serial number is B4E2-7A5D
+D:.
+|   project_structure.txt
+|   
++---api
+|   |   client.js
+|   |   systemAuth.js
+|   |   
+|   +---auth
+|   |       accountVerification.js
+|   |       changePass.js
+|   |       forgetPassword.js
+|   |       index.js
+|   |       kycOTP.js
+|   |       login.js
+|   |       signup.js
+|   |       validateOTP.js
+|   |       validateUser.js
+|   |       
+|   +---customer
+|   |       getCustomerDetails.js
+|   |       getCustomerIncome.js
+|   |       index.js
+|   |       loan.js
+|   |       loanDetails.js
+|   |       submitKycDetails.js
+|   |       updateCustomerIncome.js
+|   |       
+|   \---master
+|           masterDataService.js
+|           masterDataStore.js
+|           
++---apicontext
+|       AuthContext.js
+|       
++---apihook
+|       useAuth.js
+|       
++---assets
+|   |   app_icon.png
+|   |   
+|   +---fonts
+|   |       Poppins-Black.ttf
+|   |       Poppins-BlackItalic.ttf
+|   |       Poppins-Bold.ttf
+|   |       Poppins-BoldItalic.ttf
+|   |       Poppins-ExtraBold.ttf
+|   |       Poppins-ExtraBoldItalic.ttf
+|   |       Poppins-ExtraLight.ttf
+|   |       Poppins-ExtraLightItalic.ttf
+|   |       Poppins-Italic.ttf
+|   |       Poppins-Light.ttf
+|   |       Poppins-LightItalic.ttf
+|   |       Poppins-Medium.ttf
+|   |       Poppins-MediumItalic.ttf
+|   |       Poppins-Regular.ttf
+|   |       Poppins-SemiBold.ttf
+|   |       Poppins-SemiBoldItalic.ttf
+|   |       Poppins-Thin.ttf
+|   |       Poppins-ThinItalic.ttf
+|   |       
+|   \---images
+|           logo-caption.png
+|           
++---config
+|       appConfig.ts
+|       
++---hooks
+|       useHandleAuthError.js
+|       
++---navigation
+|       AppNavigator.js
+|       DrawerNavigator.js
+|       
++---screens
+|   |   AffordabilityScreen.js
+|   |   ChangePasswordScreen.js
+|   |   CustIncomeScreen.js
+|   |   ForgotPasswordScreen.js
+|   |   HomeScreen.js
+|   |   IncomeDetailsScreen.js
+|   |   KYCDetailsScreen.js
+|   |   LoanStatementScreen.js
+|   |   LoanStatusScreen.js
+|   |   LoginScreen.js
+|   |   NormalLoanScreen.js
+|   |   OtpVerificationScreen.js
+|   |   QuickLoanScreen.js
+|   |   SignupScreen.js
+|   |   SplashScreen.js
+|   |   UserProfileScreen.js
+|   |   
+|   \---kyc
+|           KycAddressScreen.js
+|           KycContactScreen.js
+|           KycContext.js
+|           KycDocumentsScreen.js
+|           KycEmailScreen.js
+|           KycMobileScreen.js
+|           KycReviewScreen.js
+|           
++---styles
+|       formstyles.js
+|       headerStyles.js
+|       layoutStyles.js
+|       uploadStyles.js
+|       
++---theme
+|       colors.js
+|       index.js
+|       spacing.js
+|       typography.js
+|       
++---ui
+|       AppButton.js
+|       AppCheckbox.js
+|       AppDatePicker.js
+|       AppInput.js
+|       AppPicker.js
+|       
+\---utils
+        auth.js
+        dateUtils.js
+        interpretAccountStatus.js
+        secureStore.js
+        session.js
+        

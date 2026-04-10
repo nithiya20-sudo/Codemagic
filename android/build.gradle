@@ -1,0 +1,57 @@
+// buildscript {
+//     ext {
+//         buildToolsVersion = "36.0.0"
+//         minSdkVersion = 24
+//         compileSdkVersion = 36
+//         targetSdkVersion = 36
+//         ndkVersion = "27.1.12297006"
+//         kotlinVersion = "2.1.20"
+//     }
+//     repositories {
+//         google()
+//         mavenCentral()
+//     }
+//     dependencies {
+//         classpath("com.android.tools.build:gradle")
+//         classpath("com.facebook.react:react-native-gradle-plugin")
+//         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+//     }
+// }
+
+// apply plugin: "com.facebook.react.rootproject"
+
+// Top-level build.gradle
+
+buildscript {
+    ext {
+        buildToolsVersion = "36.0.0"
+        minSdkVersion = 24
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.1.20"
+        reactNativeGradlePluginVersion = "0.71.12" // Match your RN version
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.1")
+        classpath("com.facebook.react:react-native-gradle-plugin:$reactNativeGradlePluginVersion")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+    }
+}
+
+// Apply React Native root plugin
+apply plugin: "com.facebook.react.rootproject"
+
+// Make all projects able to fetch dependencies
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
