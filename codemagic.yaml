@@ -6,6 +6,10 @@ workflows:
       vars:
         NODE_VERSION: 18
 
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: org.reactjs.native.example.CoinMob
+
     scripts:
       - name: Install dependencies
         script: |
@@ -25,7 +29,6 @@ workflows:
             -configuration Release \
             -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
             -allowProvisioningUpdates \
-            DEVELOPMENT_TEAM=4AGSB844ZR \
             archive
 
       - name: Export IPA
