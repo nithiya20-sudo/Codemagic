@@ -1,11 +1,10 @@
 workflows:
   react-native-ios:
     name: React Native iOS Build
-    max_build_duration: 60
+
     environment:
       vars:
         NODE_VERSION: 18
-      node: $NODE_VERSION
 
     scripts:
       - name: Install dependencies
@@ -16,20 +15,23 @@ workflows:
         script: |
           cd ios
           pod install
+          cd ..
 
-      - name: Build iOS
+      - name: Build iOS Archive
         script: |
           xcodebuild \
-          -workspace ios/*.xcworkspace \
-          -scheme $(xcodebuild -list -workspace ios/*.xcworkspace | grep -A 1 "Schemes:" | tail -n 1 | xargs) \
-          -configuration Release \
-          -sdk iphoneos \
-          -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive archive
+            -workspace ios/CoinMob.xcworkspace \
+            -scheme CoinMob \
+            -configuration Release \
+            -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
+            archive
+
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
+            -exportOptionsPlist ios/exportOptions.plist \
+            -exportPath $CM_BUILD_DIR/build/ios/ipa
 
     artifacts:
-      - build/ios/archive.xcarchive
-
-    publishing:
-      email:
-        recipients:
-          - nithiyakalyani.r@Captiv.com
+      - build/ios/ipa/*.ipa
