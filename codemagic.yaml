@@ -8,17 +8,30 @@ workflows:
 
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: org.reactjs.native.example.CoinMob
+        bundle_identifier: com.znbs.coinmob
+
+    cache:
+      cache_paths:
+        - node_modules
+        - ios/Pods
+        - ~/.cocoapods
 
     scripts:
       - name: Install dependencies
         script: |
-          npm install
+          npm ci
 
       - name: Install CocoaPods
         script: |
           cd ios
+          pod repo update
           pod install
+          cd ..
+
+      - name: Clean Xcode build (optional but useful)
+        script: |
+          cd ios
+          xcodebuild clean
           cd ..
 
       - name: Build iOS Archive
@@ -41,3 +54,5 @@ workflows:
 
     artifacts:
       - build/ios/ipa/*.ipa
+      - build/ios/archive.xcarchive
+      - ios/Pods
