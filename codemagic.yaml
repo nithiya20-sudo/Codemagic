@@ -24,6 +24,7 @@ workflows:
             -scheme CoinMob \
             -configuration Release \
             -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
+            -allowProvisioningUpdates \
             DEVELOPMENT_TEAM=4AGSB844ZR \
             archive
 
@@ -32,8 +33,8 @@ workflows:
           xcodebuild -exportArchive \
             -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
             -exportOptionsPlist ios/exportOptions.plist \
-            -exportPath $CM_BUILD_DIR/build/ios/ipa
-            DEVELOPMENT_TEAM=4AGSB844ZR
+            -exportPath $CM_BUILD_DIR/build/ios/ipa \
+            -allowProvisioningUpdates
 
     artifacts:
       - build/ios/ipa/*.ipa
