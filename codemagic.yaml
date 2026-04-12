@@ -7,6 +7,8 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.coinmob.app
+    cloning:
+      depth: 10 # Faster clone
     cache:
       cache_paths:
         - node_modules
@@ -21,9 +23,7 @@ workflows:
           pod install
           cd ..
       - name: Set up code signing
-        script: |
-          xcode-project detect-bundle-id
-          xcode-project use-profiles
+        script: xcode-project use-profiles --project ios/CoinMob.xcodeproj
       - name: Build iOS IPA
         script: |
           xcode-project build-ipa \
