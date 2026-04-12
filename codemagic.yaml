@@ -7,10 +7,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.coinmob.app
-        certificates:
-          - CoinMob # Your cert reference name
-        provisioning_profiles:
-          com.coinmob.app: CoinMob # Your profile reference name (from dashboard)
     cache:
       cache_paths:
         - node_modules
@@ -25,7 +21,9 @@ workflows:
           pod install
           cd ..
       - name: Set up code signing
-        script: xcode-project use-profiles --project-path ios/CoinMob.xcodeproj
+        script: |
+          xcode-project detect-bundle-id
+          xcode-project use-profiles
       - name: Build iOS IPA
         script: |
           xcode-project build-ipa \
