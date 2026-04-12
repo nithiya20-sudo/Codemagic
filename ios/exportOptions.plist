@@ -5,6 +5,11 @@
   <key>method</key>
   <string>app-store</string>
   <key>teamID</key>
-  <string>4AGSB844ZR</string>  <!-- From Apple Developer -->
+  <string>4AGSB844ZR</string>
+  <key>provisioningProfiles</key>
+  <dict>
+    <key>com.coinmob.app</key>
+    <string>CoinMob</string>
+  </dict>
 </dict>
 </plist>
