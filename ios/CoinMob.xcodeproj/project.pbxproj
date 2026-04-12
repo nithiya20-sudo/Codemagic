@@ -352,7 +352,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "PRODUCT_BUNDLE_IDENTIFIER = com.coinmob.app;";
+				PRODUCT_BUNDLE_IDENTIFIER = com.coinmob.app;
 				PRODUCT_NAME = CoinMob;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
