@@ -7,8 +7,6 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.coinmob.app
-    cloning:
-      depth: 10 # Faster clone
     cache:
       cache_paths:
         - node_modules
