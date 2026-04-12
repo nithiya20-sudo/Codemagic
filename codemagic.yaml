@@ -1,33 +1,17 @@
-workflows:
-  react-native-ios:
-    name: React Native iOS Build
+scripts:
+  - name: Install dependencies
+    script: npm ci
 
-    environment:
-      vars:
-        NODE_VERSION: 18
+  - name: Install CocoaPods
+    script: |
+      cd ios
+      pod install
+      cd ..
 
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.coinmob.app
-
-    cache:
-      cache_paths:
-        - node_modules
-        - ios/Pods
-        - ~/.cocoapods
-
-    scripts:
-      - name: Install dependencies
-        script: npm ci
-
-      - name: Install CocoaPods
-        script: |
-          cd ios
-          pod install
-          cd ..
-
-      - name: Build iOS IPA
-        script: xcode-project build-ipa --workspace ios/CoinMob.xcworkspace --scheme CoinMob
-
-    artifacts:
-      - build/ios/ipa/*.ipa
+  - name: Build iOS IPA
+    script: |
+      xcode-project build-ipa \
+        --workspace ios/CoinMob.xcworkspace \
+        --scheme CoinMob \
+        --export-options-plist ios/exportOptions.plist \
+        --clean
