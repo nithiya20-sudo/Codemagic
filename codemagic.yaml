@@ -27,11 +27,12 @@ workflows:
           cd ..
 
       - name: Build iOS IPA
-        script: |
-          xcode-project build-ipa \
-            --workspace ios/CoinMob.xcworkspace \
-            --scheme CoinMob \
-            --clean
+  script: |
+    xcode-project build-ipa \
+      --workspace ios/CoinMob.xcworkspace \
+      --scheme CoinMob \
+      --export-options-plist ios/exportOptions.plist \
+      --clean
 
     artifacts:
       - build/ios/ipa/*.ipa
