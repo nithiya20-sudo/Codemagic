@@ -18,45 +18,16 @@ workflows:
 
     scripts:
       - name: Install dependencies
-        script: |
-          npm ci
+        script: npm ci
 
       - name: Install CocoaPods
         script: |
           cd ios
-          pod repo update
           pod install
           cd ..
 
-      - name: Clean Xcode build (optional but useful)
-        script: |
-          cd ios
-          xcodebuild clean
-          cd ..
-
-      - name: Set up provisioning profiles
-        script: |
-          xcode-project use-profiles
-
-      - name: Build iOS Archive
-        script: |
-          xcodebuild \
-            -workspace ios/CoinMob.xcworkspace \
-            -scheme CoinMob \
-            -configuration Release \
-            -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
-            -allowProvisioningUpdates \
-            archive
-
-      - name: Export IPA
-        script: |
-          xcodebuild -exportArchive \
-            -archivePath $CM_BUILD_DIR/build/ios/archive.xcarchive \
-            -exportOptionsPlist ios/exportOptions.plist \
-            -exportPath $CM_BUILD_DIR/build/ios/ipa \
-            -allowProvisioningUpdates
+      - name: Build iOS IPA
+        script: xcode-project build-ipa
 
     artifacts:
       - build/ios/ipa/*.ipa
-      - build/ios/archive.xcarchive
-      - ios/Pods
