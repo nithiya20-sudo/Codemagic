@@ -43,4 +43,3 @@ workflows:
       app_store_connect:
         apple_id: 'kavin@captivtech.com'
         password: 'wlhk-bhzs-xpwo-ouwx'
-        submit_to_testflight: true
