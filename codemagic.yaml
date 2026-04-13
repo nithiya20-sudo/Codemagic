@@ -1,6 +1,7 @@
 workflows:
   react-native-ios:
     name: React Native iOS Build
+
     environment:
       vars:
         NODE_VERSION: 18
@@ -38,6 +39,6 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
 
-  publishing:
-  app_store_connect:
-    submit_to_testflight: true
+    publishing:
+      app_store_connect:
+        submit_to_testflight: true
