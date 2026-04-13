@@ -7,21 +7,26 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.coinmob.app
+
     cache:
       cache_paths:
         - node_modules
         - ios/Pods
         - ~/.cocoapods
+
     scripts:
       - name: Install dependencies
         script: npm ci
+
       - name: Install CocoaPods
         script: |
           cd ios
           pod install
           cd ..
+
       - name: Set up code signing
         script: xcode-project use-profiles --project ios/CoinMob.xcodeproj
+
       - name: Build iOS IPA
         script: |
           xcode-project build-ipa \
@@ -29,5 +34,11 @@ workflows:
             --scheme CoinMob \
             --export-options-plist ios/exportOptions.plist \
             --clean
+
     artifacts:
       - build/ios/ipa/*.ipa
+
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
