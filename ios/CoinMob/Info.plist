@@ -70,5 +70,7 @@
 		<string>Poppins-Thin.ttf</string>
 		<string>Poppins-ThinItalic.ttf</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+<string>CoinMob needs access to your photo library to allow selecting images for profile pictures or transaction proofs.</string>
 </dict>
 </plist>
