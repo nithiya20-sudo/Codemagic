@@ -66,8 +66,11 @@ export default function LoginScreen({ navigation }) {
       // 🔐 Authenticate user
       const result = await signIn(username.trim(), password);
 
+      console.log('✅ LOGIN API RESPONSE:');
+      console.log(JSON.stringify(result, null, 2));
+
       if (!result.success) {
-        Alert.alert('Login Failed!', result.message);
+        Alert.alert('Authentication Failed!');
         setLoading(false);
         return;
       }
@@ -140,12 +143,32 @@ export default function LoginScreen({ navigation }) {
       // ---------------------------------------------------------
       navigation.replace('MainDrawer');
     } catch (e) {
-      console.error('❌ Login error:', e.message);
-      setError(e.message);
-      Alert.alert(
-        'Login Failed!',
-        'Try After Sometime.' || 'Invalid username or password',
-      );
+      console.error('❌ Login error:', e);
+
+      // -----------------------------------------
+      // HANDLE 429 TOO MANY REQUESTS
+      // -----------------------------------------
+      if (e?.response?.status === 429) {
+        Alert.alert(
+          'Too Many Attempts',
+          'Too many attempts. Please try again in a few minutes.',
+        );
+
+        setLoading(false);
+        return;
+      }
+
+      // -----------------------------------------
+      // OTHER ERRORS
+      // -----------------------------------------
+      const errorMessage =
+        e?.response?.data?.message ||
+        e?.message ||
+        'Invalid username or password';
+
+      setError(errorMessage);
+
+      Alert.alert('Login Failed!');
     } finally {
       setLoading(false);
     }

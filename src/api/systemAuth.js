@@ -82,20 +82,23 @@
 // }
 // src/api/systemAuth.js
 import axios from 'axios';
+import DeviceInfo from 'react-native-device-info';
 import CryptoJS from 'crypto-js';
 import Config from 'react-native-config';
+import { Alert } from 'react-native';
 
 // ---------------------------------------------------------------------
 //  Configuration constants
 // ---------------------------------------------------------------------
 const BASE_URL = 'https://loans.znbs.co.zm';
+// const BASE_URL = 'https://loans-test.znbs.co.zm';
 const GET_TOKEN_ENDPOINT = '/API/MobileAccessRequest/GetSlotToken';
 
-const APP_ID = Config.HMAC_APP_ID;
-const SECRET_KEY = Config.HMAC_SECRET_KEY;
+// const APP_ID = Config.HMAC_APP_ID;
+// const SECRET_KEY = Config.HMAC_SECRET_KEY;
 
-console.log('App ID:', APP_ID);
-console.log('HMAC_SECRET_KEY:', SECRET_KEY);
+// console.log('App ID:', APP_ID);
+// console.log('HMAC_SECRET_KEY:', SECRET_KEY);
 
 // ---------------------------------------------------------------------
 //  Local cache (slot token may be reused briefly if valid)
@@ -106,64 +109,69 @@ let lastFetch = 0;
 // ---------------------------------------------------------------------
 //  Helper: generate UTC ISO timestamp without milliseconds
 // ---------------------------------------------------------------------
-export function getUtcTimestamp() {
-  return new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-}
+// export function getUtcTimestamp() {
+//   return new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+// }
 
 // ---------------------------------------------------------------------
 //  Helper: compute HMAC-SHA256 → Base64
 // ---------------------------------------------------------------------
-export function computeHmacSignature(appId, timestamp, body) {
-  try {
-    const dataToSign = `${appId}|${timestamp}|${body}`;
-    const hash = CryptoJS.HmacSHA256(dataToSign, SECRET_KEY);
-    const signature = CryptoJS.enc.Base64.stringify(hash);
-    return signature;
-  } catch (err) {
-    console.error('❌ Error computing HMAC signature:', err.message);
-    throw err;
-  }
-}
+// export function computeHmacSignature(appId, timestamp, body) {
+//   try {
+//     const dataToSign = `${appId}|${timestamp}|${body}`;
+//     const hash = CryptoJS.HmacSHA256(dataToSign, SECRET_KEY);
+//     const signature = CryptoJS.enc.Base64.stringify(hash);
+//     return signature;
+//   } catch (err) {
+//     console.error('❌ Error computing HMAC signature:', err.message);
+//     throw err;
+//   }
+// }
 
 // ---------------------------------------------------------------------
 //  Main function: fetch slot token (HMAC-secured)
-// ---------------------------------------------------------------------
 export async function getSlotToken() {
   try {
-    // Optionally reuse cached token (disabled for now)
-    // const now = Date.now();
-    // if (cachedToken && now - lastFetch < 30000) return cachedToken;
+    const deviceId = await DeviceInfo.getUniqueId();
 
-    // Step 1: prepare empty body and timestamp
-    const bodyObj = {};
-    const bodyStr = JSON.stringify(bodyObj);
-    const timestamp = getUtcTimestamp();
-    const signature = computeHmacSignature(APP_ID, timestamp, bodyStr);
-
-    // Step 2: send signed request
-    const res = await axios.post(`${BASE_URL}${GET_TOKEN_ENDPOINT}`, bodyObj, {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-App-Id': APP_ID,
-        'X-Timestamp': timestamp,
-        'X-Signature': signature,
+    const res = await axios.post(
+      `${BASE_URL}${GET_TOKEN_ENDPOINT}`,
+      {
+        deviceId: deviceId,
       },
-      timeout: 15000,
-    });
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'device-id': deviceId,
+        },
+        timeout: 15000,
+      },
+    );
 
-    // Step 3: extract token
     const token = res?.data;
+
     if (!token || typeof token !== 'string') {
       throw new Error('Invalid token response');
     }
 
-    // Cache briefly
     cachedToken = token;
-    // lastFetch = now;
 
-    console.log('✅ Slot token fetched via HMAC');
+    console.log('✅ Slot token fetched');
     return token;
   } catch (err) {
+    console.log('❌ Status:', err?.response?.status);
+    console.log('❌ Response:', err?.response?.data);
+
+    // ✅ TOO MANY REQUESTS
+    if (err?.response?.status === 429) {
+      Alert.alert(
+        'Too Many Attempts',
+        'Too many attempts. Please try again in a few minutes.',
+      );
+
+      return null;
+    }
+
     console.error('❌ Failed to fetch slot token:', err.message);
     throw err;
   }

@@ -1,9 +1,10 @@
 {
   "name": "CoinMob",
-  "version": "0.0.1",
+  "version": "0.0.6",
   "private": true,
   "scripts": {
     "android-release": "npm version patch --no-git-tag-version && node updateVersion.js && cd android && gradlew.bat clean assembleRelease",
+    "android-uat-release": "npm version patch --no-git-tag-version && node updateVersion.js && cd android && gradlew clean assembleUatRelease",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "lint": "eslint .",

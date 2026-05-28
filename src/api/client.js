@@ -273,11 +273,7 @@
 import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import Config from 'react-native-config';
-import {
-  getSlotToken,
-  computeHmacSignature,
-  getUtcTimestamp,
-} from './systemAuth';
+import { getSlotToken } from './systemAuth';
 
 /** ──────────────────────────────
  *  Base URLs
@@ -292,6 +288,17 @@ const PROD_BASE_URL = 'https://loans.znbs.co.zm/iProofService/api';
 const QUICKLOAN_BASE_URL = 'https://loans.znbs.co.zm';
 const NormalLoan_BASE_URL = 'https://loans.znbs.co.zm';
 export const MASTERDATA_BASE_URL = 'https://loans.znbs.co.zm'; // update after deploy
+
+// const PREAUTH_BASE_5010 = 'https://loans-test.znbs.co.zm';
+// const POSTAUTH_BASE_5010 = 'https://loans-test.znbs.co.zm';
+// const POSTAUTH_BASE_5011 = 'https://loans-test.znbs.co.zm';
+// const PREAUTH_BASE_5012 = 'https://loans-test.znbs.co.zm';
+// const LOAN_BASE_5015 = 'https://loans-test.znbs.co.zm';
+// const CUSTOMER_BASE_5016 = 'https://loans-test.znbs.co.zm';
+// const PROD_BASE_URL = 'https://loans-test.znbs.co.zm/iProofService/api';
+// const QUICKLOAN_BASE_URL = 'https://loans-test.znbs.co.zm';
+// const NormalLoan_BASE_URL = 'https://loans-test.znbs.co.zm';
+// export const MASTERDATA_BASE_URL = 'https://loans-test.znbs.co.zm'; // update after deploy
 
 /** ──────────────────────────────
  *  Axios Clients
@@ -335,39 +342,19 @@ preAuthApi5010.interceptors.request.use(
     try {
       const path = config.url?.toLowerCase() || '';
 
-      // 🔹 Skip token generation for GetSlotToken itself
       if (path.includes('getslottoken')) return config;
 
-      // 🔹 Step 1: fetch slot token
       const sysToken = await getSlotToken();
-      console.log('📤 Slot Token for request:', sysToken);
 
-      // 🔹 Step 2: compute fresh HMAC for this request
-      const timestamp = getUtcTimestamp();
-      const bodyStr = JSON.stringify(config.data || {});
-      const signature = computeHmacSignature(
-        Config.HMAC_APP_ID,
-        timestamp,
-        bodyStr,
-      );
-
-      // 🔹 Step 3: attach headers
       config.headers = {
         ...config.headers,
         Authorization: `Bearer ${sysToken}`,
         'Content-Type': 'application/json',
-        'X-App-Id': Config.HMAC_APP_ID,
-        'X-Timestamp': timestamp,
-        'X-Signature': signature,
       };
-
-      console.log('🔍 Final URL:', config.baseURL + config.url);
-      console.log('🔍 Final Body:', bodyStr);
-      console.log('🔐 Final Headers:', config.headers);
 
       return config;
     } catch (err) {
-      console.error('❌ Error preparing HMAC headers:', err.message);
+      console.error('❌ Error:', err.message);
       throw err;
     }
   },
@@ -401,36 +388,17 @@ preAuthApi5012.interceptors.request.use(
 
       if (path.includes('getslottoken')) return config;
 
-      // 🔹 Step 1: fetch slot token
       const sysToken = await getSlotToken();
-      console.log('📤 Slot Token for request:', sysToken);
 
-      // 🔹 Step 2: compute HMAC
-      const timestamp = getUtcTimestamp();
-      const bodyStr = JSON.stringify(config.data || {});
-      const signature = computeHmacSignature(
-        Config.HMAC_APP_ID,
-        timestamp,
-        bodyStr,
-      );
-
-      // 🔹 Step 3: attach headers
       config.headers = {
         ...config.headers,
         Authorization: `Bearer ${sysToken}`,
         'Content-Type': 'application/json',
-        'X-App-Id': Config.HMAC_APP_ID,
-        'X-Timestamp': timestamp,
-        'X-Signature': signature,
       };
-
-      console.log('🔍 Final URL:', config.baseURL + config.url);
-      console.log('🔍 Final Body:', bodyStr);
-      console.log('🔐 Final Headers:', config.headers);
 
       return config;
     } catch (err) {
-      console.error('❌ Error preparing HMAC headers:', err.message);
+      console.error('❌ Error:', err.message);
       throw err;
     }
   },
