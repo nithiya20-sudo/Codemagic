@@ -1,10 +1,55 @@
+# # # workflows:
+# # #   react-native-ios:
+# # #     name: React Native iOS Build
+
+# # #     environment:
+# # #       vars:
+# # #         NODE_VERSION: 18
+# # #       ios_signing:
+# # #         distribution_type: app_store
+# # #         bundle_identifier: com.coinmob.app
+
+# # #     cache:
+# # #       cache_paths:
+# # #         - node_modules
+# # #         - ios/Pods
+# # #         - ~/.cocoapods
+
+# # #     scripts:
+# # #       - name: Install dependencies
+# # #         script: npm ci
+
+# # #       - name: Install CocoaPods
+# # #         script: |
+# # #           cd ios
+# # #           pod install
+# # #           cd ..
+
+# # #       - name: Set up code signing
+# # #         script: xcode-project use-profiles --project ios/CoinMob.xcodeproj
+
+# # #       - name: Build iOS IPA
+# # #         script: |
+# # #           xcode-project build-ipa \
+# # #             --workspace ios/CoinMob.xcworkspace \
+# # #             --scheme CoinMob \
+# # #             --export-options-plist ios/exportOptions.plist \
+# # #             --clean
+
+# # #     artifacts:
+# # #       - build/ios/ipa/*.ipa
+
+# # #     publishing:
+# # #       app_store_connect:
+# # #         apple_id: 'kavin@captivtech.com'
+# # #         password: 'wlhk-bhzs-xpwo-ouwx'
 # # workflows:
 # #   react-native-ios:
 # #     name: React Native iOS Build
 
 # #     environment:
 # #       vars:
-# #         NODE_VERSION: 18
+# #         NODE_VERSION: '18'
 # #       ios_signing:
 # #         distribution_type: app_store
 # #         bundle_identifier: com.coinmob.app
@@ -16,17 +61,19 @@
 # #         - ~/.cocoapods
 
 # #     scripts:
-# #       - name: Install dependencies
+# #       - name: Install Node dependencies
 # #         script: npm ci
 
 # #       - name: Install CocoaPods
 # #         script: |
 # #           cd ios
-# #           pod install
+# #           pod install --repo-update
 # #           cd ..
 
 # #       - name: Set up code signing
-# #         script: xcode-project use-profiles --project ios/CoinMob.xcodeproj
+# #         script: |
+# #           xcode-project use-profiles \
+# #             --project ios/CoinMob.xcodeproj
 
 # #       - name: Build iOS IPA
 # #         script: |
@@ -48,6 +95,7 @@
 #     name: React Native iOS Build
 
 #     environment:
+#       xcode: 16.4 # ← THIS IS THE FIX. Pins away from Xcode 26.4
 #       vars:
 #         NODE_VERSION: '18'
 #       ios_signing:
@@ -57,7 +105,6 @@
 #     cache:
 #       cache_paths:
 #         - node_modules
-#         - ios/Pods
 #         - ~/.cocoapods
 
 #     scripts:
@@ -67,6 +114,7 @@
 #       - name: Install CocoaPods
 #         script: |
 #           cd ios
+#           rm -rf Pods Podfile.lock
 #           pod install --repo-update
 #           cd ..
 
@@ -90,12 +138,13 @@
 #       app_store_connect:
 #         apple_id: 'kavin@captivtech.com'
 #         password: 'wlhk-bhzs-xpwo-ouwx'
+
 workflows:
   react-native-ios:
     name: React Native iOS Build
 
     environment:
-      xcode: 16.4 # ← THIS IS THE FIX. Pins away from Xcode 26.4
+      xcode: 16.4
       vars:
         NODE_VERSION: '18'
       ios_signing:
@@ -122,6 +171,13 @@ workflows:
         script: |
           xcode-project use-profiles \
             --project ios/CoinMob.xcodeproj
+
+      - name: Set build number # ← ADD THIS STEP
+        script: |
+          BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "com.coinmob.app") + 1))
+          cd ios
+          agvtool new-version -all $BUILD_NUMBER
+          cd ..
 
       - name: Build iOS IPA
         script: |
