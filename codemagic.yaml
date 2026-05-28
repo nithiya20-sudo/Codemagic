@@ -106,6 +106,7 @@ workflows:
       cache_paths:
         - node_modules
         - ~/.cocoapods
+        # NOTE: ios/Pods intentionally removed — stale pods cause fmt/Yoga failures
 
     scripts:
       - name: Install Node dependencies
@@ -114,7 +115,7 @@ workflows:
       - name: Install CocoaPods
         script: |
           cd ios
-          rm -rf Pods Podfile.lock        # ← Clear stale pods
+          rm -rf Pods Podfile.lock
           pod install --repo-update
           cd ..
 

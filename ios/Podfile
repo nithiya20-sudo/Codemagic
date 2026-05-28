@@ -34,14 +34,13 @@
 # end
 
 
-# Resolve react_native_pods.rb with node to allow for hoisting
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, '15.1'        # ← Change from min_ios_version_supported to '15.1'
+platform :ios, '15.1'
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -65,10 +64,15 @@ target 'CoinMob' do
       :mac_catalyst_enabled => false,
     )
 
-    # ← ADD THIS: Force all pods to match your app's deployment target
+    # Fix 1: Force deployment target on all pods
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+
+        # Fix 2: Disable Werror for fmt and Yoga so strict compiler doesn't break them
+        config.build_settings['OTHER_CPLUSPLUSFLAGS'] = '$(inherited) -Wno-error'
+        config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+        config.build_settings['SWIFT_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
       end
     end
 
