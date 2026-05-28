@@ -144,7 +144,7 @@ workflows:
     name: React Native iOS Build
 
     environment:
-      xcode: 16.4
+      xcode: 26.4 # ← Back to 26.4, Apple requires it now
       vars:
         NODE_VERSION: '18'
       ios_signing:
