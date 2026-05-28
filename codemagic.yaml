@@ -1,13 +1,63 @@
+# # workflows:
+# #   react-native-ios:
+# #     name: React Native iOS Build
+
+# #     environment:
+# #       vars:
+# #         NODE_VERSION: 18
+# #       ios_signing:
+# #         distribution_type: app_store
+# #         bundle_identifier: com.coinmob.app
+
+# #     cache:
+# #       cache_paths:
+# #         - node_modules
+# #         - ios/Pods
+# #         - ~/.cocoapods
+
+# #     scripts:
+# #       - name: Install dependencies
+# #         script: npm ci
+
+# #       - name: Install CocoaPods
+# #         script: |
+# #           cd ios
+# #           pod install
+# #           cd ..
+
+# #       - name: Set up code signing
+# #         script: xcode-project use-profiles --project ios/CoinMob.xcodeproj
+
+# #       - name: Build iOS IPA
+# #         script: |
+# #           xcode-project build-ipa \
+# #             --workspace ios/CoinMob.xcworkspace \
+# #             --scheme CoinMob \
+# #             --export-options-plist ios/exportOptions.plist \
+# #             --clean
+
+# #     artifacts:
+# #       - build/ios/ipa/*.ipa
+
+# #     publishing:
+# #       app_store_connect:
+# #         apple_id: 'kavin@captivtech.com'
+# #         password: 'wlhk-bhzs-xpwo-ouwx'
+
 # workflows:
 #   react-native-ios:
 #     name: React Native iOS Build
 
 #     environment:
-#       vars:
-#         NODE_VERSION: 18
+#       node: 18
+
 #       ios_signing:
 #         distribution_type: app_store
 #         bundle_identifier: com.coinmob.app
+
+#       vars:
+#         XCODE_WORKSPACE: 'ios/CoinMob.xcworkspace'
+#         XCODE_SCHEME: 'CoinMob'
 
 #     cache:
 #       cache_paths:
@@ -16,24 +66,39 @@
 #         - ~/.cocoapods
 
 #     scripts:
-#       - name: Install dependencies
-#         script: npm ci
+#       - name: Install npm dependencies
+#         script: |
+#           npm ci
+
+#       - name: Verify React Native installation
+#         script: |
+#           ls -la node_modules/react-native
 
 #       - name: Install CocoaPods
 #         script: |
 #           cd ios
-#           pod install
+#           pod install --repo-update
 #           cd ..
 
+#       - name: Debug iOS project files
+#         script: |
+#           echo "Checking iOS folder..."
+#           ls -la ios
+#           echo "Finding workspace..."
+#           find ios -name "*.xcworkspace"
+#           echo "Finding xcodeproj..."
+#           find ios -name "*.xcodeproj"
+
 #       - name: Set up code signing
-#         script: xcode-project use-profiles --project ios/CoinMob.xcodeproj
+#         script: |
+#           xcode-project use-profiles \
+#             --project ios/CoinMob.xcodeproj
 
 #       - name: Build iOS IPA
 #         script: |
 #           xcode-project build-ipa \
-#             --workspace ios/CoinMob.xcworkspace \
-#             --scheme CoinMob \
-#             --export-options-plist ios/exportOptions.plist \
+#             --workspace "$XCODE_WORKSPACE" \
+#             --scheme "$XCODE_SCHEME" \
 #             --clean
 
 #     artifacts:
@@ -44,67 +109,36 @@
 #         apple_id: 'kavin@captivtech.com'
 #         password: 'wlhk-bhzs-xpwo-ouwx'
 
-workflows:
-  react-native-ios:
-    name: React Native iOS Build
+scripts:
+  - name: Install dependencies
+    script: |
+      npm ci
+      ls node_modules/react-native
 
-    environment:
-      node: 18
+  - name: Clean iOS
+    script: |
+      cd ios
+      rm -rf Pods Podfile.lock *.xcworkspace
+      cd ..
 
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.coinmob.app
+  - name: Install CocoaPods
+    script: |
+      cd ios
+      pod install --repo-update --verbose
+      cd ..
 
-      vars:
-        XCODE_WORKSPACE: 'ios/CoinMob.xcworkspace'
-        XCODE_SCHEME: 'CoinMob'
+  - name: Verify workspace creation
+    script: |
+      find ios -name "*.xcworkspace"
+      ls -la ios
 
-    cache:
-      cache_paths:
-        - node_modules
-        - ios/Pods
-        - ~/.cocoapods
+  - name: Set up code signing
+    script: |
+      xcode-project use-profiles --project ios/CoinMob.xcodeproj
 
-    scripts:
-      - name: Install npm dependencies
-        script: |
-          npm ci
-
-      - name: Verify React Native installation
-        script: |
-          ls -la node_modules/react-native
-
-      - name: Install CocoaPods
-        script: |
-          cd ios
-          pod install --repo-update
-          cd ..
-
-      - name: Debug iOS project files
-        script: |
-          echo "Checking iOS folder..."
-          ls -la ios
-          echo "Finding workspace..."
-          find ios -name "*.xcworkspace"
-          echo "Finding xcodeproj..."
-          find ios -name "*.xcodeproj"
-
-      - name: Set up code signing
-        script: |
-          xcode-project use-profiles \
-            --project ios/CoinMob.xcodeproj
-
-      - name: Build iOS IPA
-        script: |
-          xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME" \
-            --clean
-
-    artifacts:
-      - build/ios/ipa/*.ipa
-
-    publishing:
-      app_store_connect:
-        apple_id: 'kavin@captivtech.com'
-        password: 'wlhk-bhzs-xpwo-ouwx'
+  - name: Build IPA
+    script: |
+      xcode-project build-ipa \
+        --workspace ios/CoinMob.xcworkspace \
+        --scheme CoinMob \
+        --clean
