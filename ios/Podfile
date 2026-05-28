@@ -64,15 +64,10 @@ target 'CoinMob' do
       :mac_catalyst_enabled => false,
     )
 
-    # Fix 1: Force deployment target on all pods
+    # Only keep the deployment target fix
     installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
         config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
-
-        # Fix 2: Disable Werror for fmt and Yoga so strict compiler doesn't break them
-        config.build_settings['OTHER_CPLUSPLUSFLAGS'] = '$(inherited) -Wno-error'
-        config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
-        config.build_settings['SWIFT_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
       end
     end
 

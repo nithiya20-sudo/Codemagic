@@ -90,12 +90,12 @@
 #       app_store_connect:
 #         apple_id: 'kavin@captivtech.com'
 #         password: 'wlhk-bhzs-xpwo-ouwx'
-
 workflows:
   react-native-ios:
     name: React Native iOS Build
 
     environment:
+      xcode: 15.4 # ← THIS IS THE FIX. Pins away from Xcode 26.4
       vars:
         NODE_VERSION: '18'
       ios_signing:
@@ -106,7 +106,6 @@ workflows:
       cache_paths:
         - node_modules
         - ~/.cocoapods
-        # NOTE: ios/Pods intentionally removed — stale pods cause fmt/Yoga failures
 
     scripts:
       - name: Install Node dependencies
