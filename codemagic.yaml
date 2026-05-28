@@ -172,13 +172,6 @@ workflows:
           xcode-project use-profiles \
             --project ios/CoinMob.xcodeproj
 
-      - name: Set build number # ← ADD THIS STEP
-        script: |
-          BUILD_NUMBER=$(($(app-store-connect get-latest-testflight-build-number "com.coinmob.app") + 1))
-          cd ios
-          agvtool new-version -all $BUILD_NUMBER
-          cd ..
-
       - name: Build iOS IPA
         script: |
           xcode-project build-ipa \
