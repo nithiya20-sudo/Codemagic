@@ -6,6 +6,7 @@
     "android-release": "npm version patch --no-git-tag-version && node updateVersion.js && cd android && gradlew.bat clean assembleRelease",
     "android-uat-release": "npm version patch --no-git-tag-version && node updateVersion.js && cd android && gradlew clean assembleUatRelease",
     "android": "react-native run-android",
+    "ios-version": "node updateIosVersion.js",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
