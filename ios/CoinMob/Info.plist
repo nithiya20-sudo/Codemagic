@@ -27,12 +27,19 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
+	
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires access to the camera to capture photos.</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app requires permission to save photos.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>UILaunchStoryboardName</key>
