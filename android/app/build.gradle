@@ -306,7 +306,7 @@ android {
     }
     prod {
         dimension "environment"
-        resValue "string", "app_name", "ZNBS MLIS"
+        resValue "string", "app_name", "ZNBS Instant Loan"
     }
     }
 
