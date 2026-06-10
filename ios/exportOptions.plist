@@ -9,7 +9,7 @@
   <key>provisioningProfiles</key>
   <dict>
     <key>com.znbs.znbsinstantloan</key>
-    <string>Znbs Instant Loan</string>
+    <string>InstantLoan</string>
   </dict>
 </dict>
 </plist>
