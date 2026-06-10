@@ -101,7 +101,7 @@ workflows:
         NODE_VERSION: '18'
       ios_signing:
         distribution_type: app_store
-        bundle_identifier: com.coinmob.app
+        bundle_identifier: com.znbs.znbsinstantloan
 
     cache:
       cache_paths:
