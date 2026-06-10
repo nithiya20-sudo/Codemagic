@@ -135,7 +135,7 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
 
-    # publishing:
-    #   app_store_connect:
-    #     apple_id: 'nithiyakalyani.r@Captiv.in'
-    #     password: 'wlhk-bhzs-xpwo-ouwx'
+    publishing:
+      app_store_connect:
+        apple_id: 'nithiyakalyani.r@Captiv.in'
+        password: 'zova-uffn-iffc-hlzt'
