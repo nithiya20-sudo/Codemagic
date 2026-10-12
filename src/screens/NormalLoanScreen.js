@@ -39,7 +39,8 @@ import { fetchCustomerLoanAccounts } from '../api/customer/loan';
 import { fetchLoanDetails } from '../api/customer/loanDetails';
 import { submitNormalLoanDetails } from '../api/customer/submitNormalLoanDetails';
 
-export default function NormalLoanScreen({ navigation }) {
+export default function NormalLoanScreen({ navigation, route }) {
+  const affordabilityData = route.params?.affordabilityResponse;
   const { user } = useAuth();
   const userName = user?.username || user?.userName || '';
 
@@ -632,7 +633,32 @@ export default function NormalLoanScreen({ navigation }) {
             <AppInput
               keyboardType="numeric"
               value={tenure}
-              onChangeText={t => setTenure(stripToInteger(t))}
+              onChangeText={text => {
+                const value = stripToInteger(text);
+                setTenure(value);
+
+                if (!value) return;
+
+                const entered = Number(value);
+                const min = Number(affordabilityData?.outParams?.MinTenure);
+                const max = Number(affordabilityData?.outParams?.MaxTenure);
+
+                if (entered < min) {
+                  Alert.alert(
+                    'Invalid Tenure',
+                    affordabilityData?.outParams?.MinTenureMessage,
+                  );
+                  return;
+                }
+
+                if (entered > max) {
+                  Alert.alert(
+                    'Invalid Tenure',
+                    affordabilityData?.outParams?.MaxTenureMessage,
+                  );
+                  return;
+                }
+              }}
               placeholder="e.g., 12"
             />
           </View>

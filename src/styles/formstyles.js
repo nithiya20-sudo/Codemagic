@@ -152,6 +152,13 @@ export const formStyles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 40,
   },
+  // formstyles.js
+  errorText: {
+    color: 'red', // or your theme's danger color
+    fontSize: 12,
+    marginTop: 4,
+    marginBottom: 8,
+  },
 
   // Vertical stacks
   vstackXs: { width: '100%', gap: 6 },

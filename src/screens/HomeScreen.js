@@ -134,7 +134,11 @@ export default function HomeScreen({ navigation }) {
       console.log('📤 Affordability Request Payload:');
       console.log(JSON.stringify(payload, null, 2));
 
+      console.time('Affordability API');
+
       const res = await getAffordability(payload);
+
+      console.timeEnd('Affordability API');
 
       // 🟢 PRINT FULL RESPONSE
       console.log('📥 Affordability Full Response:');
@@ -170,12 +174,16 @@ export default function HomeScreen({ navigation }) {
 
       // ✅ Navigate
       if (loanType === 'QUICK') {
+        console.time('Navigation');
+
         navigation.navigate('QuickLoan', {
           affordabilityResponse: res,
           loanTypeId: 0,
           loanNumber: null,
           LoanNo: 0,
         });
+
+        console.timeEnd('Navigation');
       } else {
         navigation.navigate('NormalLoan', {
           affordabilityResponse: res,

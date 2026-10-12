@@ -169,7 +169,33 @@ export default function AffordabilityScreen({ navigation }) {
             <AppInput
               keyboardType="numeric"
               value={tenure}
-              onChangeText={setTenure}
+              onChangeText={text => {
+                setTenure(text);
+
+                if (!text) return;
+
+                const entered = Number(text);
+
+                // Hardcoded values (same as API response)
+                const min = 3;
+                const max = 360;
+
+                if (entered < min) {
+                  Alert.alert(
+                    'Invalid Tenure',
+                    'Minimum Tenure must be greater than or equal to 3.',
+                  );
+                  return;
+                }
+
+                if (entered > max) {
+                  Alert.alert(
+                    'Invalid Tenure',
+                    'Maximum Tenure must be less than or equal to 360.',
+                  );
+                  return;
+                }
+              }}
               placeholder="e.g., 12"
             />
           </View>

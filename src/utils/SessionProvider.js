@@ -28,7 +28,7 @@ export default function SessionProvider({ children }) {
       }
 
       const response = await fetch(
-        `http://13.201.159.177:5002/iProofService/api/RemoteGateway/ValidateSlot?slotId=${slotId}`,
+        `https://loans.znbs.co.zm/iProofService/api/RemoteGateway/ValidateSlot?slotId=${slotId}`,
         { method: 'POST', headers: { 'Content-Type': 'application/json' } },
       );
 

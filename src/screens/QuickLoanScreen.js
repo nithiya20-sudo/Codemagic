@@ -31,6 +31,7 @@ import SignatureBox from '../ui/SignatureBox';
 import { submitQuickLoanDetails } from '../api/customer/submitQuickLoanDetails';
 
 export default function QuickLoanScreen({ navigation, route }) {
+  const affordabilityData = route.params?.affordabilityResponse;
   const { user } = useAuth();
   const userName = user?.username || user?.userName || '';
   const { autoAffordability } = route.params || {};
@@ -45,7 +46,8 @@ export default function QuickLoanScreen({ navigation, route }) {
   // 5 → Credit Score + T&C + Signature
   // 6 → Result
   const [step, setStep] = useState(1);
-
+  //tenurecheck
+  const [apiTenure, setApiTenure] = useState('');
   // -------- Step 1 – Inputs & Affordability --------
   const [tenure, setTenure] = useState('');
   const [loanAmount, setLoanAmount] = useState('');
@@ -547,14 +549,14 @@ export default function QuickLoanScreen({ navigation, route }) {
         JSON.stringify(loanBody, null, 2),
       );
 
-      // ✅ REAL API CALL
+      // REAL API CALL
       const apiRes = await submitQuickLoanDetails(loanBody);
 
       if (apiRes?.executionStatus !== 'Success') {
         throw new Error(apiRes?.executionMessage || 'Submission failed');
       }
 
-      // 🔴 HANDLE BACKEND INTEGRATION FAILURE
+      //  HANDLE BACKEND INTEGRATION FAILURE
       const isIntegrated = apiRes?.outParams?.IsIntegrated;
       const errorMessage =
         apiRes?.outParams?.ErrorMessage || apiRes?.outParams?.IntegrationStatus;
@@ -606,7 +608,32 @@ export default function QuickLoanScreen({ navigation, route }) {
             <AppInput
               keyboardType="numeric"
               value={tenure}
-              onChangeText={t => setTenure(stripToInteger(t))}
+              onChangeText={text => {
+                const value = stripToInteger(text);
+                setTenure(value);
+
+                if (!value) return;
+
+                const entered = Number(value);
+                const min = Number(affordabilityData?.outParams?.MinTenure);
+                const max = Number(affordabilityData?.outParams?.MaxTenure);
+
+                if (entered < min) {
+                  Alert.alert(
+                    'Invalid Tenure',
+                    affordabilityData?.outParams?.MinTenureMessage,
+                  );
+                  return;
+                }
+
+                if (entered > max) {
+                  Alert.alert(
+                    'Invalid Tenure',
+                    affordabilityData?.outParams?.MaxTenureMessage,
+                  );
+                  return;
+                }
+              }}
               placeholder="e.g., 12"
             />
           </View>

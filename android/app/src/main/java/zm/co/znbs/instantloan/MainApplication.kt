@@ -1,4 +1,4 @@
-package com.coinmob
+package zm.co.znbs.mlis
 
 import android.app.Application
 import com.facebook.react.PackageList

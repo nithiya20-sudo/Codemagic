@@ -1,5 +1,6 @@
-package com.coinmob
+package zm.co.znbs.mlis
 
+import android.os.Bundle
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -19,4 +20,12 @@ class MainActivity : ReactActivity() {
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate =
       DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
+
+  // Prevents Android from restoring fragment/view state (including react-native-screens'
+  // native fragments) after the process is killed and recreated. react-native-screens
+  // explicitly disallows this and crashes — JS is our source of truth for navigation, not
+  // Android's saved instance state.
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(null)
+  }
 }

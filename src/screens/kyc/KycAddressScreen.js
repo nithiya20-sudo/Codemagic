@@ -1,6 +1,6 @@
 // src/screens/kyc/KycAddressScreen.js
 import React, { useEffect, useState, useMemo } from 'react';
-import { View, Text, Alert,ScrollView } from 'react-native';
+import { View, Text, Alert, ScrollView } from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 
 import AppPicker from '../../ui/AppPicker';
@@ -15,7 +15,6 @@ import { useKyc } from './KycContext';
 import { useAuth } from '../../apicontext/AuthContext';
 import { getCustomerDetails } from '../../api/customer/getCustomerDetails';
 
-
 const MASTER_DATA_KEY = 'MASTER_DATA';
 
 export default function KycAddressScreen({ navigation }) {
@@ -24,6 +23,8 @@ export default function KycAddressScreen({ navigation }) {
 
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
+
+  const [addressError, setAddressError] = useState('');
 
   const [provinceCode, setProvinceCode] = useState('');
   const [districtCode, setDistrictCode] = useState('');
@@ -51,8 +52,7 @@ export default function KycAddressScreen({ navigation }) {
         // 2) Start with anything already in KycContext.address
         let initialProvince = kycData.address?.provinceCode || '';
         let initialDistrict = kycData.address?.districtCode || '';
-        let initialAddress =
-          kycData.address?.residentialAddress || '';
+        let initialAddress = kycData.address?.residentialAddress || '';
 
         // // 3) If not in context, get from CustomerDetails
         // const username = user?.username;
@@ -81,7 +81,7 @@ export default function KycAddressScreen({ navigation }) {
         console.error('Address init error:', err);
         Alert.alert(
           'Error',
-          'Unable to load address details. Please try again.'
+          'Unable to load address details. Please try again.',
         );
       } finally {
         setLoading(false);
@@ -97,14 +97,22 @@ export default function KycAddressScreen({ navigation }) {
   // -------------------------------
   const filteredDistricts = useMemo(() => {
     return districts.filter(
-      (d) =>
-        String(d.ProvinceCode) === String(provinceCode)
+      d => String(d.ProvinceCode) === String(provinceCode),
     );
   }, [districts, provinceCode]);
 
-  const handleProvinceChange = (val) => {
+  const handleProvinceChange = val => {
     setProvinceCode(val);
     setDistrictCode(''); // reset district when province changes
+  };
+
+  const handleAddressChange = text => {
+    if (text.length >= 40) {
+      setAddressError('Residential address cannot exceed 40 characters.');
+    } else {
+      setAddressError('');
+    }
+    setResAddress(text);
   };
 
   const handleNext = () => {
@@ -117,9 +125,14 @@ export default function KycAddressScreen({ navigation }) {
       return;
     }
     if (!resAddress.trim()) {
+      Alert.alert('Validation', 'Please enter your residential address.');
+      return;
+    }
+    if (resAddress.trim().length > 40) {
+      setAddressError('Residential address cannot exceed 40 characters.');
       Alert.alert(
         'Validation',
-        'Please enter your residential address.'
+        'Residential address cannot exceed 40 characters.',
       );
       return;
     }
@@ -141,9 +154,7 @@ export default function KycAddressScreen({ navigation }) {
           { justifyContent: 'center', alignItems: 'center' },
         ]}
       >
-        <Text style={typography.body}>
-          Loading address details…
-        </Text>
+        <Text style={typography.body}>Loading address details…</Text>
       </View>
     );
   }
@@ -157,7 +168,7 @@ export default function KycAddressScreen({ navigation }) {
         <AppPicker
           label="Province"
           placeholder="Select Province"
-          items={provinces.map((p) => ({
+          items={provinces.map(p => ({
             label: p.Name,
             value: String(p.Code),
           }))}
@@ -169,39 +180,51 @@ export default function KycAddressScreen({ navigation }) {
         <AppPicker
           label="District"
           placeholder="Select District"
-          items={filteredDistricts.map((d) => ({
+          items={filteredDistricts.map(d => ({
             label: d.Name,
             value: String(d.Code),
           }))}
           selectedValue={String(districtCode)}
-          onValueChange={(val) => setDistrictCode(String(val))}
+          onValueChange={val => setDistrictCode(String(val))}
         />
 
+        {/* Address */}
         {/* Address */}
         <AppInput
           label="Residential Address"
           value={resAddress}
-          onChangeText={setResAddress}
+          onChangeText={handleAddressChange}
           placeholder="Enter full residential address"
           multiline
           numberOfLines={4}
+          maxLength={40}
         />
-
- 
+        {addressError ? (
+          <Text
+            style={{
+              color: 'red',
+              fontSize: 12,
+              marginTop: 4,
+              marginBottom: 8,
+            }}
+          >
+            ⚠ {addressError}
+          </Text>
+        ) : null}
       </View>
-             {/* Buttons */}
-        <View style={{ flexDirection: 'row', marginTop: 20 }}>
-          <View style={{ flex: 1 }}>
-            <AppButton
-              title="Back"
-              variant="secondary"
-              onPress={() => navigation.navigate("KYCDetails")}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <AppButton title="Next" onPress={handleNext} />
-          </View>
+      {/* Buttons */}
+      <View style={{ flexDirection: 'row', marginTop: 20 }}>
+        <View style={{ flex: 1 }}>
+          <AppButton
+            title="Back"
+            variant="secondary"
+            onPress={() => navigation.navigate('KYCDetails')}
+          />
         </View>
- </ScrollView>
+        <View style={{ flex: 1 }}>
+          <AppButton title="Next" onPress={handleNext} />
+        </View>
+      </View>
+    </ScrollView>
   );
 }
