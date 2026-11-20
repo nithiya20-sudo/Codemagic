@@ -1,6 +1,6 @@
 {
   "name": "CoinMob",
-  "version": "0.0.6",
+  "version": "0.0.9",
   "private": true,
   "scripts": {
     "android-release": "npm version patch --no-git-tag-version && node updateVersion.js && cd android && gradlew.bat clean assembleRelease",

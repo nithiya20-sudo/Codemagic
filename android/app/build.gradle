@@ -155,21 +155,17 @@ android {
             signingConfig signingConfigs.debug
         }
 
-        release {
-            signingConfig signingConfigs.release
+       release {
+    signingConfig signingConfigs.release
 
-            // Enable R8 shrinking and obfuscation.
-            minifyEnabled enableProguardInReleaseBuilds
+    minifyEnabled enableProguardInReleaseBuilds
+    shrinkResources true
 
-            // Optimised default Android ProGuard rules
-            // plus your app-specific rules.
-            proguardFiles(
-                getDefaultProguardFile(
-                    "proguard-android-optimize.txt"
-                ),
-                "proguard-rules.pro"
-            )
-        }
+    proguardFiles(
+        getDefaultProguardFile("proguard-android-optimize.txt"),
+        "proguard-rules.pro"
+    )
+}
     }
 
     // ------------------------------------
@@ -177,15 +173,10 @@ android {
     // These settings primarily affect APK outputs.
     // ------------------------------------
     splits {
-        abi {
-            enable true
-            reset()
-
-            include "armeabi-v7a", "arm64-v8a"
-
-            universalApk true
-        }
+    abi {
+        enable false
     }
+}
 }
 
 // ------------------------------------
@@ -198,5 +189,15 @@ dependencies {
         implementation("com.facebook.react:hermes-android")
     } else {
         implementation jscFlavor
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+        force "androidx.datastore:datastore:1.2.1"
+        force "androidx.datastore:datastore-core:1.2.1"
+        force "androidx.datastore:datastore-core-okio:1.2.1"
+        force "androidx.datastore:datastore-preferences:1.2.1"
+        force "androidx.datastore:datastore-preferences-core:1.2.1"
     }
 }

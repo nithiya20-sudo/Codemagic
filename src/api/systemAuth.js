@@ -90,8 +90,8 @@ import { Alert } from 'react-native';
 // ---------------------------------------------------------------------
 //  Configuration constants
 // ---------------------------------------------------------------------
+// const BASE_URL = 'https://loans.znbs.co.zm';
 const BASE_URL = 'https://loans.znbs.co.zm';
-// const BASE_URL = 'https://loans-test.znbs.co.zm';
 const GET_TOKEN_ENDPOINT = '/API/MobileAccessRequest/GetSlotToken';
 
 // const APP_ID = Config.HMAC_APP_ID;
