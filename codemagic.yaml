@@ -139,4 +139,3 @@ workflows:
       app_store_connect:
         apple_id: 'nithiyakalyani.r@Captiv.in'
         password: 'zova-uffn-iffc-hlzt'
-        submit_to_testflight: true
