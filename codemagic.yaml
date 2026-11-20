@@ -94,44 +94,35 @@
 workflows:
   react-native-ios:
     name: React Native iOS Build
-
+    integrations:
+      app_store_connect: znbs-key
     environment:
-      xcode: 26.0 # ← THIS IS THE FIX. Pins away from Xcode 26.4
+      xcode: 26.0
+      node: 18
       vars:
-        NODE_VERSION: '18'
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.znbs.znbsinstantloan
-
-    cache:
-      cache_paths:
-        - node_modules
-        - ~/.cocoapods
-
+        CERTIFICATE_PRIVATE_KEY: Encrypted(...) # secure variable (see below)
     scripts:
       - name: Install Node dependencies
         script: npm ci
-
       - name: Install CocoaPods
         script: |
           cd ios
           rm -rf Pods Podfile.lock
           pod install --repo-update
           cd ..
-
       - name: Set up code signing
         script: |
-          xcode-project use-profiles \
-            --project ios/CoinMob.xcodeproj
-
+          keychain initialize
+          app-store-connect fetch-signing-files "com.znbs.znbsinstantloan" \
+            --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles --project ios/CoinMob.xcodeproj
       - name: Build iOS IPA
         script: |
           xcode-project build-ipa \
             --workspace ios/CoinMob.xcworkspace \
             --scheme CoinMob \
-            --export-options-plist ios/exportOptions.plist \
             --clean
-
     artifacts:
       - build/ios/ipa/*.ipa
 
