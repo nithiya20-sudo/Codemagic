@@ -94,11 +94,11 @@
 workflows:
   react-native-ios:
     name: React Native iOS Build
-
+    integrations:
+      app_store_connect: znbs-key # must match the key name in Codemagic
     environment:
-      xcode: 26.0 # ← THIS IS THE FIX. Pins away from Xcode 26.4
-      vars:
-        NODE_VERSION: '18'
+      xcode: 26.0
+      node: 18
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.znbs.znbsinstantloan
@@ -129,7 +129,6 @@ workflows:
           xcode-project build-ipa \
             --workspace ios/CoinMob.xcworkspace \
             --scheme CoinMob \
-            --export-options-plist ios/exportOptions.plist \
             --clean
 
     artifacts:
@@ -139,3 +138,4 @@ workflows:
       app_store_connect:
         apple_id: 'nithiyakalyani.r@Captiv.in'
         password: 'zova-uffn-iffc-hlzt'
+        submit_to_testflight: true
