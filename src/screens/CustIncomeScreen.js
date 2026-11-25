@@ -491,7 +491,14 @@
 //   );
 // }
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, Alert, Image } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  Alert,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 
 import AppInput from '../ui/AppInput';
 import AppButton from '../ui/AppButton';
@@ -563,7 +570,8 @@ export default function IncomeDetailsScreen({ navigation }) {
   // Payslip
   const [fileData, setFileData] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
+  // Start as true so the loader shows immediately (no flash of empty form)
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // ------------------------------------
@@ -584,7 +592,10 @@ export default function IncomeDetailsScreen({ navigation }) {
   // Load existing Income Details from API
   // ------------------------------------
   useEffect(() => {
-    if (!userName) return;
+    if (!userName) {
+      setIsLoading(false);
+      return;
+    }
     loadIncomeDetails();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userName]);
@@ -602,7 +613,6 @@ export default function IncomeDetailsScreen({ navigation }) {
         return;
       }
 
-      // Example structure from you:
       // data.gridParams.IncomeDetails = { "0": { ID_Description, ID_Amount, ... }, ... }
       const incomeMap = data.gridParams?.IncomeDetails || {};
       const deductionMap = data.gridParams?.DeductionDetails || {};
@@ -642,8 +652,7 @@ export default function IncomeDetailsScreen({ navigation }) {
         setOtherDeductions(formatCurrency(otherDedObj.DD_Amount));
       }
 
-      // For now response has PayslipDocument = null
-      // If backend later sends it, we can pre-populate preview:
+      // If backend sends a payslip, pre-populate the preview
       const payslip = data.outParams?.PayslipDocument;
       if (payslip) {
         const base64 = payslip.base64 || payslip.Base64 || '';
@@ -652,7 +661,8 @@ export default function IncomeDetailsScreen({ navigation }) {
 
         let sizeBytes = 0;
         if (base64) {
-          sizeBytes = Math.round((base4.length * 3) / 4);
+          // FIX: was base4.length (ReferenceError)
+          sizeBytes = Math.round((base64.length * 3) / 4);
         }
 
         setFileData({
@@ -922,10 +932,9 @@ export default function IncomeDetailsScreen({ navigation }) {
             {
               text: 'OK',
               onPress: () => {
-                // Navigate to your main/home screen
                 navigation.navigate('MainDrawer');
 
-                // Or if you want to reset the navigation stack completely:
+                // Or reset the navigation stack completely:
                 // navigation.reset({
                 //   index: 0,
                 //   routes: [{ name: 'MainDrawer' }],
@@ -944,6 +953,29 @@ export default function IncomeDetailsScreen({ navigation }) {
       setIsSubmitting(false);
     }
   };
+
+  // ------------------------------------
+  // Loader (shown while income details are loading)
+  // All hooks are declared above, so this early return is safe.
+  // ------------------------------------
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          paddingTop: spacing.lg,
+          backgroundColor: '#F2F2F2',
+        }}
+      >
+        <ActivityIndicator size="large" color="#1E9E86" />
+        <Text style={{ marginTop: spacing.sm, fontSize: 13 }}>
+          Loading income details...
+        </Text>
+      </View>
+    );
+  }
 
   // ------------------------------------
   // Render
@@ -1090,15 +1122,9 @@ export default function IncomeDetailsScreen({ navigation }) {
       </View>
 
       <AppButton
-        title={
-          isSubmitting
-            ? 'Submitting...'
-            : isLoading
-            ? 'Loading…'
-            : 'Submit Income Details'
-        }
+        title={isSubmitting ? 'Submitting...' : 'Submit Income Details'}
         onPress={handleSubmit}
-        disabled={isLoading || isSubmitting}
+        disabled={isSubmitting}
         style={{ marginTop: spacing.lg, marginBottom: spacing.xl }}
       />
     </ScrollView>

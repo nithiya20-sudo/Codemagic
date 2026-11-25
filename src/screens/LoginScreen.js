@@ -125,15 +125,15 @@ export default function LoginScreen({ navigation }) {
       // ---------------------------------------------------------
       try {
         console.log('📚 Refreshing MasterData after login...');
-        const master = await getMasterData();
-        console.log('Master API URL:', master);
+        // const master = await getMasterData();
+        // console.log('Master API URL:', master);
 
-        if (master) {
-          await EncryptedStorage.setItem('MASTER_DATA', JSON.stringify(master));
-          console.log('✔ MasterData refreshed & stored');
-        } else {
-          console.log('⚠ MasterData API returned empty response');
-        }
+        // if (master) {
+        //   await EncryptedStorage.setItem('MASTER_DATA', JSON.stringify(master));
+        //   console.log('✔ MasterData refreshed & stored');
+        // } else {
+        //   console.log('⚠ MasterData API returned empty response');
+        // }
       } catch (err) {
         console.log('❌ Failed to refresh MasterData:', err);
       }
