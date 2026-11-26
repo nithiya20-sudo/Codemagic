@@ -96,7 +96,7 @@ workflows:
     name: React Native iOS Build
 
     environment:
-      xcode: 26.0 # ← THIS IS THE FIX. Pins away from Xcode 26.4
+      xcode: 27.0 # ← THIS IS THE FIX. Pins away from Xcode 26.4
       vars:
         NODE_VERSION: '18'
       ios_signing:
